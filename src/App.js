@@ -1,24 +1,48 @@
-import logo from './logo.svg';
-import './App.css';
+// src/App.js
+import React from "react";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Navigate,
+} from "react-router-dom";
+import StudentAuthForm from "./components/student/StudentAuthForm";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+import CssBaseline from "@mui/material/CssBaseline";
+import { useSelector } from "react-redux";
+import StudentDashboard from "./components/student/StudentDashboard";
+
+const darkTheme = createTheme({
+  palette: {
+    mode: "dark",
+  },
+});
 
 function App() {
+  const { user } = useSelector((state) => state.studentAuth);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ThemeProvider theme={darkTheme}>
+      <CssBaseline />
+      <Router>
+        <Routes>
+          <Route path="/" element={<Navigate to="/student-login" />} />
+          <Route
+            path="/Student-dashboard"
+            element={
+              user ? <StudentDashboard /> : <Navigate to="/student-login" />
+            }
+          />
+          <Route
+            path="/student-login"
+            element={<StudentAuthForm isSignUp={false} />}
+          />
+          <Route
+            path="/student-signup"
+            element={<StudentAuthForm isSignUp={true} />}
+          />
+        </Routes>
+      </Router>
+    </ThemeProvider>
   );
 }
 
