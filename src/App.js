@@ -34,7 +34,7 @@ function App() {
           />
           <Route
             path="/student-login"
-            element={<StudentAuthForm isSignUp={false} />}
+            element={<StudentAuthForm isSignUp={false} />} //conditional rendering
           />
           <Route
             path="/student-signup"

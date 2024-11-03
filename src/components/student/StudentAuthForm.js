@@ -1,9 +1,20 @@
 // src/components/student/StudentAuthForm.js
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { TextField, Button, Typography, Box, Avatar } from "@mui/material";
-import { useDispatch } from "react-redux";
-import { studentSignUp, studentSignIn } from "../../redux/studentAuthSlice";
+import {
+  TextField,
+  Button,
+  Typography,
+  Box,
+  Avatar,
+  Alert,
+} from "@mui/material";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  studentSignUp,
+  studentSignIn,
+  clearError,
+} from "../../redux/studentAuthSlice";
 import { Link, useNavigate } from "react-router-dom";
 
 function StudentAuthForm({ isSignUp }) {
@@ -16,6 +27,14 @@ function StudentAuthForm({ isSignUp }) {
   const navigate = useNavigate();
   const [profilePicture, setProfilePicture] = useState(null);
   const [preview, setPreview] = useState(null);
+  const { error } = useSelector((state) => state.studentAuth); // access err
+
+  useEffect(() => {
+    // Clear error message when component unmounts
+    return () => {
+      dispatch(clearError());
+    };
+  }, [dispatch]);
 
   const onSubmit = async (data) => {
     const formData = new FormData();
@@ -57,13 +76,27 @@ function StudentAuthForm({ isSignUp }) {
         {isSignUp ? "Student Registration" : "Student Login"}
       </Typography>
       <form onSubmit={handleSubmit(onSubmit)} encType="multipart/form-data">
+        {/* err msg  display */}
+        {error && (
+          <Alert severity="error" onClose={() => dispatch(clearError())}>
+            {error}
+          </Alert>
+        )}
         {isSignUp && (
           <>
             <TextField
               label="Name"
               fullWidth
               margin="normal"
-              {...register("name", { required: "Name is required" })}
+              {...register("name", {
+                required: "Name is required",
+                minLength: {
+                  value: 3,
+                  message: "Name must be at least 3 characters long",
+                },
+                validate: (value) =>
+                  !/^\s/.test(value) || "Name cannot start with a space",
+              })}
               error={!!errors.name}
               helperText={errors.name?.message}
             />
@@ -74,7 +107,8 @@ function StudentAuthForm({ isSignUp }) {
               {...register("email", {
                 required: "Email is required",
                 pattern: {
-                  value: /\S+@\S+\.\S+/,
+                  value: /^[a-z0-9._%+-]+@[a-z0-9-]+(\.[a-z]{2,})+$/,
+
                   message: "Enter a valid email",
                 },
               })}
@@ -88,7 +122,12 @@ function StudentAuthForm({ isSignUp }) {
               margin="normal"
               {...register("password", {
                 required: "Password is required",
-                minLength: { value: 6, message: "Minimum length is 6" },
+                pattern: {
+                  value:
+                    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/,
+                  message:
+                    "Password must include upper,lower case letters,numbers,symbols and atleast 6 characters",
+                },
               })}
               error={!!errors.password}
               helperText={errors.password?.message}
@@ -153,9 +192,13 @@ function StudentAuthForm({ isSignUp }) {
       </form>
       <Typography align="center" sx={{ mt: 2 }}>
         {isSignUp ? (
-          <Link to="/student-login">Already have an account? Sign In</Link>
+          <Link to="/student-login" onClick={() => dispatch(clearError())}>
+            Already have an account? Sign In{" "}
+          </Link>
         ) : (
-          <Link to="/student-signup">Don’t have an account? Sign Up</Link>
+          <Link to="/student-signup" onClick={() => dispatch(clearError())}>
+            Don’t have an account? Sign Up
+          </Link>
         )}
       </Typography>
     </Box>

@@ -13,7 +13,13 @@ export const studentSignUp = createAsyncThunk(
       });
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      if (error.response.status === 409) {
+        return rejectWithValue("Student already exists with this email.");
+      }
+      if (error.response.status === 500) {
+        return rejectWithValue("Sever error");
+      }
+      return rejectWithValue("An error occurred. Please try again.");
     }
   }
 );
@@ -25,7 +31,16 @@ export const studentSignIn = createAsyncThunk(
       const response = await axios.post("/api/students/signin", credentials);
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      if (error.response.status === 404) {
+        return rejectWithValue("Student not found");
+      }
+      if (error.response.status === 401) {
+        return rejectWithValue("Invalid Password");
+      }
+      if (error.response.status === 500) {
+        return rejectWithValue("Sever error");
+      }
+      return rejectWithValue("An error occurred. Please try again.");
     }
   }
 );
@@ -37,6 +52,9 @@ const studentAuthSlice = createSlice({
     logout: (state) => {
       state.user = null;
       state.token = null;
+    },
+    clearError: (state) => {
+      state.error = null;
     },
   },
   extraReducers: (builder) => {
@@ -66,5 +84,5 @@ const studentAuthSlice = createSlice({
   },
 });
 
-export const { logout } = studentAuthSlice.actions;
+export const { logout, clearError } = studentAuthSlice.actions;
 export default studentAuthSlice.reducer;
