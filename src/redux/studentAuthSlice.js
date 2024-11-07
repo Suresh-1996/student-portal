@@ -56,6 +56,9 @@ const studentAuthSlice = createSlice({
     clearError: (state) => {
       state.error = null;
     },
+    setError: (state, action) => {
+      state.error = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -84,5 +87,5 @@ const studentAuthSlice = createSlice({
   },
 });
 
-export const { logout, clearError } = studentAuthSlice.actions;
+export const { logout, clearError, setError } = studentAuthSlice.actions;
 export default studentAuthSlice.reducer;

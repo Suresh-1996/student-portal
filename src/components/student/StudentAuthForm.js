@@ -14,6 +14,7 @@ import {
   studentSignUp,
   studentSignIn,
   clearError,
+  setError,
 } from "../../redux/studentAuthSlice";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -41,8 +42,14 @@ function StudentAuthForm({ isSignUp }) {
     formData.append("name", data.name);
     formData.append("email", data.email);
     formData.append("password", data.password);
+
     if (profilePicture) {
       formData.append("profilePicture", profilePicture);
+      dispatch(clearError());
+    } else {
+      if (isSignUp) {
+        return dispatch(setError("Please upload profile picture"));
+      }
     }
 
     const action = isSignUp ? studentSignUp(formData) : studentSignIn(data);

@@ -102,18 +102,21 @@ function StudentDashboard() {
           ))}
         {tabIndex === 1 &&
           enrolledCourses &&
-          enrolledCourses.map((course) => (
-            <Grid item xs={12} sm={6} md={4} key={course._id}>
-              <CourseCard
-                title={course.courseName}
-                description={course.description}
-                teacherName={course.teacherId?.name}
-                teacherProfilePic={course.teacherId?.profilePicture}
-                onAction={() => handleUnenroll(course._id)}
-                actionLabel="Unenroll"
-              />
-            </Grid>
-          ))}
+          enrolledCourses.map(
+            (course) =>
+              course && (
+                <Grid item xs={12} sm={6} md={4} key={course._id}>
+                  <CourseCard
+                    title={course.courseName}
+                    description={course.description}
+                    teacherName={course.teacherId?.name}
+                    teacherProfilePic={course.teacherId?.profilePicture}
+                    onAction={() => handleUnenroll(course._id)}
+                    actionLabel="Unenroll"
+                  />
+                </Grid>
+              )
+          )}
       </Grid>
     </Box>
   );
