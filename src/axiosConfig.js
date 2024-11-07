@@ -1,4 +1,3 @@
-// src/axiosConfig.js
 import axios from "axios";
 
 axios.defaults.baseURL = "http://localhost:8000"; // Replace with backend URL

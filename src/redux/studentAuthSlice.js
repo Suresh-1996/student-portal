@@ -1,4 +1,3 @@
-// src/redux/slices/studentAuthSlice.js
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 import axios from "../axiosConfig";

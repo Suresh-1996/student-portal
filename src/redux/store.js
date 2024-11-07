@@ -1,4 +1,3 @@
-// src/redux/store.js
 import { configureStore } from "@reduxjs/toolkit";
 import studentAuthReducer from "./studentAuthSlice";
 import studentCourseReducer from "./studentCoursesSlice";
